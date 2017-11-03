@@ -23,14 +23,20 @@ constructor(props) {
 setupData(data, color, front){
 	var process_data = {datasets:[]};
 	var i = 0;
+	var j = 0;
 
 	process_data["labels"] = front["labels"];
 	process_data["datasets"][0] = {};
 	process_data["datasets"][0]["borderWidth"] = 1;
 	process_data["datasets"][0]["data"] = data;
 	process_data["datasets"][0]["backgroundColor"] = [];
-	while (color[i]){
-		process_data["datasets"][0]["backgroundColor"][i] = base_colors[color[i]];
+	while (process_data["datasets"][0]["data"][i]){
+		if (color[i])
+			process_data["datasets"][0]["backgroundColor"][i] = base_colors[color[i]];
+		else {
+			process_data["datasets"][0]["backgroundColor"][i] = base_colors[color[j % i]];	
+			j++;		
+		}
 		i++;
 	}
 	return (process_data);

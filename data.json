@@ -1,0 +1,15 @@
+{
+"clee1": {
+	"timestamp":1509367224223, 
+	"data1": 1, 
+	"data2": 2
+},
+"clee2": {"timestamp":1509377224223, "data1": 5, "data2": 10},
+"clee6": {"timestamp":1509377324234, "data1": 5, "data2": 20},
+"clee7": {"timestamp":1509377424245, "data1": 5, "data2": 10},
+"clee8": {"timestamp":1509377524256, "data1": 5, "data2": 15},
+"clee9": {"timestamp":1509377624267, "data1": 5, "data2": 11},
+"clee3": {"timestamp":1509387224223, "data1": 10,"data2": 15},
+"clee4": {"timestamp":1509397224223, "data1": 15,"data2": 20},
+"clee5": {"timestamp":1509407224223, "data1": 20,"data2": 25}
+}

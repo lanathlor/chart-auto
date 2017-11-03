@@ -1,60 +1,51 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import registerServiceWorker from './registerServiceWorker';
-import Fork from './forker';
-import TimeGet from './timeGetter'
+import Tuile from './tuile';
+import Setter from './loadChart';
 
-var time_data = [[
-	{timestamp: 1509367224223, value: 5},
-	{timestamp: 1509367224224, value: 10},
-	{timestamp: 1509367224225, value: 15}
-	],[
-	{timestamp: 1509367224223, value: 5},
-	{timestamp: 1509367224224, value: 10},
-	{timestamp: 1509367224225, value: 15}
-	]
-]
+/* format of the setter object :
+	type: string. the type of chart. line, bar and doughnut implemented.
+	label: string. the x value. often "timestamp". need to be ordered.
+	labels: for line and bar : array. for doughnut : string. labels on the chart.
+	value: array. the value to get from the data object.
+	color: array. the color on the chart. the color need to existe in line.js, bar.js and/or doughnut.js with rgba().
+	agreg: char. can be + or =. + merge all close data by adding them. = merge all close data by averge.
+	agreg_time: object. set the definition of the range the data will merge. the are merge by considering there label value. thinkig to be used with timestamp, other usage may crash
+				{millisecond:int, second:int, minute:int, hour:int, day:int, week:int, mounth:int, year:int} specifie the amount of $key to merge data. several key can be used. if some keys are not specified the will be cnsidered as 0
+	column: int. set the size of a column.
+	row: int, set the size of a row.
+	query: the query to retrive data.
 
-var test_time = {
-	day:2
-}
+	format of the data object :
+	{
+		key1: {label:
+				value1:
+				value2:
+				.
+				.
+				.
+			}
+		key2 : {}
+		.
+		.
+		.
+	}
+	the key name are ignored.
 
-var test_tab = [
-	[[[{timestamp:1509367224223, value:1}]]],
-	[[{timestamp:1509367224224, value:5}],[{timestamp:1509367224223, value:10}]],
-	[{timestamp:1509367224224, value:1}],[{timestamp:1509367224223, value:0}],
-	[[[{timestamp:1509367224223}], [[{timestamp:1509367224223}]]]],
-]
+	usage of the loadSetterChart function in loadChart.js here exported as Setter :
+	loadSetterChart(query, callback)
+	the callback will receive the setter object and the data object order by setter label key.
 
-console.log(TimeGet(test_tab, 1509367224224, test_tab));
+	usage of the Tuile component define in tuile.js :
+	props: setter, data.
+	will draw a chart comforming with the setter and data given.
 
-var data = [
-	[5, 10, 15, 20, 25],
-	[30, 25, 20, 15, 10],
-	[5, 5, 35, 35, 5]
-]
+	usage of the getTime function define in timeGetter.js :
+	getTime(data, time_scale)
+	receive a data array and either a timestamp or an object like agreg_time.
+	will return the data array with all the object that contened timestamp lesser the the time_scale parameter.
+*/
 
-var data_doughnut = [5, 10, 15]
-
-var data_bubble = [
-	{x:1, y:2, r:50},
-	{x:5, y:5, r:20},
-	{x:0, y:0, r:10}
-]
-
-var color = [
-	"blue", "red", "green"
-]
-
-var front = {
-	labels:["Q1", "Q2", "Q3", "Q4", "Q5"],
-	sets_label:['# of blue votes', '# of red votes', '# of green votes']
-}
-
-/*ReactDOM.render(<Bar taille={10} data={data} color={color} front={front} />, document.getElementById('root'));
-ReactDOM.render(<Line taille={10} data={data} color={color} front={front} />, document.getElementById('line'));
-ReactDOM.render(<Doughnut taille={10} data={data_doughnut} color={color} front={front} />, document.getElementById('dough'));
-ReactDOM.render(<Bubble taille={10} data={data_bubble} color={color} front={front} />, document.getElementById('bubble'));*/
-ReactDOM.render(<Fork taille={10} data={data_doughnut} color={color} front={front} chart={"donut"} />, document.getElementById('fork'))
-registerServiceWorker();
+Setter("/chart/test", function(setter, data){
+	ReactDOM.render(<Tuile setter={setter} data={data}/>, document.getElementById('fork'))
+});

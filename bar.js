@@ -19,6 +19,14 @@ var options = {
 					display: true,
 					labelString: 'probability'
 				}
+			}],
+			xAxes: [{
+				type: "time",
+				time: {
+					displayFormats:{
+						millisecond: "h:mm:ss.SSS a"
+					}
+				}
 			}]
 		}
 	}

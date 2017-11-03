@@ -12,6 +12,7 @@ var forker = {
 }
 
 class forking extends Component{
+
 	render(){
 		var GoTo = forker[this.props.chart];
 		return (<GoTo

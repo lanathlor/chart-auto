@@ -19,6 +19,14 @@ var options = {
 					display: true,
 					labelString: 'probability'
 				}
+			}],
+			xAxes: [{
+				type: "time",
+				time: {
+					displayFormats:{
+						millisecond: "h:mm:ss.SSS a"
+					}
+				}
 			}]
 		}
 	}
@@ -63,7 +71,6 @@ setupData(data, color, front){
 }
 
 render(){
-	console.log(this.props);
 	return(
 		<div>
 				<Line
