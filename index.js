@@ -44,6 +44,8 @@ import Setter from './loadChart';
 	getTime(data, time_scale)
 	receive a data array and either a timestamp or an object like agreg_time.
 	will return the data array with all the object that contened timestamp lesser the the time_scale parameter.
+
+	need semantic-react, firebase-react, chart-react in order to work.
 */
 
 Setter("/chart/test", function(setter, data){
