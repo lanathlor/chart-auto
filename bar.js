@@ -93,12 +93,12 @@ render(){
 	
 	return(
 		<div>
-				<Bar
-					data={this.setupData(this.props.data, this.props.color, this.props.front)}
-					width={10 * this.props.taille}
-					height={50 * this.props.taille}
-					options={options}
-				/>
+			<Bar
+				data={this.setupData(this.props.data, this.props.color, this.props.front)}
+				width={10 * this.props.taille}
+				height={50 * this.props.taille}
+				options={options}
+			/>
 		</div>
 
 	)

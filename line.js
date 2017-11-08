@@ -92,12 +92,12 @@ render(){
 		options["title"]["display"] = false;
 	return(
 		<div>
-				<Line
-					data={this.setupData(this.props.data, this.props.color, this.props.front)}
-					width={10 * this.props.taille}
-					height={50 * this.props.taille}
-					options={options}
-				/>
+			<Line
+				data={this.setupData(this.props.data, this.props.color, this.props.front)}
+				width={10 * this.props.taille}
+				height={50 * this.props.taille}
+				options={options}
+			/>
 		</div>
 
 	)

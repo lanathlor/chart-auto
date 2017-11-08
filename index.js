@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Dash from './dashbord';
+import { Progress } from 'semantic-ui-react';
 
 /* format of the setter object :
 	type: string. the type of chart. line, bar and doughnut implemented.
@@ -48,6 +49,8 @@ import Dash from './dashbord';
 */
 
 ReactDOM.render(<Dash node={"/chart"}/>, document.getElementById('fork'));
+ReactDOM.render(<Progress value='4' total='4' progress='percent' label={"test"}/>,document.getElementById('test'));
+ReactDOM.render(<Progress value='2' total='4' progress='percent' label={"test2"}/>,document.getElementById('test2'));
 
 /*
 Setter("/chart/test", function(setter, data){

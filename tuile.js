@@ -206,7 +206,7 @@ class tuile extends Component{
 				return ("ERROR : bad format of the value field");
 			front["labels"] = getLabels(this.props.setter["label"].split(','), tmp);
 			front["sets_label"] = this.props.setter["labels"].split(',');
-		} else if (this.props.setter["type"] === "donut") {
+		} else if (this.props.setter["type"] === "donut" || this.props.setter["type"] === "progress") {
 			data = getDonutData(this.props.setter["value"], tmp);
 			if (data === -1)
 				return ("ERROR : bad format of the value field");

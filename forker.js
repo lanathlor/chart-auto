@@ -3,12 +3,14 @@ import Liner from './line';
 import Doughnut from './doughnut';
 import Bar from './bar';
 import Bubble from './bubble'
+import Progress from './progress';
 
 var forker = {
 	donut: Doughnut,
 	bubble: Bubble,
 	line: Liner,
-	bar: Bar
+	bar: Bar,
+	progress: Progress
 }
 
 class forking extends Component{

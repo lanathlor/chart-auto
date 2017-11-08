@@ -62,8 +62,6 @@ class dash extends Component{
 	}
 	render(){
 		var i = 0;
-		//var order_test = "0:1,2;1:donut,donut,donut";
-		//var order_test = "1:donut,donut,donut;0:2,1";
 		if (this.state.ok === true){
 			var split1 = this.state.order.split(";");
 			var split2 = [];

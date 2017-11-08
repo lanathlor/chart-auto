@@ -55,12 +55,12 @@ render(){
 		options["title"]["display"] = false;
 	return(
 		<div>
-				<Doughnut
-					data={this.setupData(this.props.data, this.props.color, this.props.front)}
-					width={20 * this.props.taille}
-					height={20 * this.props.taille}
-					options = {options}
-				/>
+			<Doughnut
+				data={this.setupData(this.props.data, this.props.color, this.props.front)}
+				width={20 * this.props.taille}
+				height={20 * this.props.taille}
+				options = {options}
+			/>
 		</div>
 
 	)
