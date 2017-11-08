@@ -2,25 +2,20 @@ import React, {Component} from 'react';
 import Fork from './forker';
 import {Grid} from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
-/*
-var setter = {
-	label:"timestamp",
-	value:["data1", "data2"],
-	labels:["value1", "value2"],
-	color:["blue", "red", "green"],
-	type: "line"
-}
+import firebase from 'firebase';
+import Btn from './btn';
+import getTime from './timeGetter';
+var config = {
+	apiKey: "AIzaSyCLVpmJeXOD2_q3XedlpEaGGpSog0kQjBM",
+	authDomain: "monkeymoneyfrance.firebaseapp.com",
+	databaseURL: "https://monkeymoneyfrance.firebaseio.com",
+	projectId: "monkeymoneyfrance",
+	storageBucket: "monkeymoneyfrance.appspot.com",
+	messagingSenderId: "451894989456"
+};
+firebase.initializeApp(config);
 
-var data = {
-	clee1: {timestamp:1509367224223, data1: 1, data2: 2},
-	clee2: {timestamp:1509377224223, data1: 5, data2: 10},
-	clee3: {timestamp:1509387224223, data1: 10, data2: 15},
-	clee4: {timestamp:1509397224223, data1: 15, data2: 20},
-	clee5: {timestamp:1509407224223, data1: 20, data2: 25},
-}
-*/
-
-var IntoNb = {
+/*var IntoNb = {
 	1:"one",
 	2:"two",
 	3:"three",
@@ -32,7 +27,7 @@ var IntoNb = {
 	9:"nine",
 	10:"ten"
 }
-
+*/
 var time_base = {
 	millisecond: 1,
 	second: 1000,
@@ -40,7 +35,7 @@ var time_base = {
 	hour: 60 * 60 * 1000,
 	day: 24 * 60 * 60 * 1000,
 	week: 7 * 24 * 60 * 60 * 1000,
-	mounth: 30 * 24 * 60 * 60 * 1000,
+	month: 30 * 24 * 60 * 60 * 1000,
 	year: 365 * 24 * 60 * 60 * 1000
 }
 
@@ -93,6 +88,7 @@ function getSplitTime(timeJSON){
 		if (timeJSON[key])
 			time += time_base[key] * timeJSON[key];
 	}
+
 	return (time);
 }
 
@@ -102,7 +98,6 @@ function agregate(data, agrega){
 	var tim_lim = 0;
 	var newStamp = 0;
 	var splitTime = getSplitTime(agrega["agreg_time"]);
-
 	for (var key in data){
 		if (tim_lim === 0){
 			tim_lim = data[key][agrega["label"]] + splitTime;
@@ -133,8 +128,8 @@ function agregate(data, agrega){
 						ret[newStamp][key2] = 0;
 					ret[newStamp][key2] += data[key][key2];
 					i[key2]++;
-				} else 
-					ret[newStamp][agrega["label"]] = newStamp;			
+				} else
+					ret[newStamp][agrega["label"]] = newStamp;
 			}
 		}
 	}
@@ -142,34 +137,113 @@ function agregate(data, agrega){
 }
 
 class tuile extends Component{
+	constructor(props) {
+		super(props);
+		this.state = {};
+		this.save_data = {};
+	}
+
+	changeData(time){
+		var new_data = [];
+		var i = 0;
+
+		for (var key in this.state.save_data){
+			new_data[i] = this.state.save_data[key];
+			i++;
+		}
+		new_data = getTime(new_data, time);
+		if (!new_data)
+			new_data = [];
+		this.setState({data:new_data});
+	}
+
+	componentWillMount() {
+		var tmp = [];
+		var data = {};
+		var i = 0;
+		var self = this;
+		var setter = this.props.setter;
+
+		firebase.database().ref(setter["query"]).orderByChild(setter["label"]).on("value", function(sp){
+			for (var key in sp.val()){
+				tmp.push(sp.val()[key]);
+			}
+			tmp.sort(function(a, b){
+				return a[setter["label"]] > b[setter["label"]];
+			})
+			tmp.sort();
+			while (tmp[i]){
+				data[tmp[i][setter["label"]]] = tmp[i];
+				i++;
+			}
+			self.setState({data:data, save_data:data, limit:0});
+		});
+	}
+
 	render(){
-		var data = this.props.data;
+		if (!this.state.data) return null;
+		var data = this.state.data;
 		var front = {};
 		var type = this.props.setter["type"];
-		var color = this.props.setter["color"];
+		var color = this.props.setter["color"].split(',');
 		var tmp = data;
+		var btn = [];
+		var border = "";
+		var b = 0;
+
+		for (var key in this.props.setter["button"]){
+			btn[b] = this.props.setter["button"][key];
+			b++;
+		}
 
 		if (this.props.setter["agreg"]){
 			tmp = agregate(data, this.props.setter);
 		}
 		if (this.props.setter["type"] === "line" || this.props.setter["type"] === "bar"){
-			data = getAllDataDouble(this.props.setter["value"], tmp);
+
+			data = getAllDataDouble(this.props.setter["value"].split(','), tmp);
 			if (data === -1)
 				return ("ERROR : bad format of the value field");
-			front["labels"] = getLabels(this.props.setter["label"], tmp);
-			front["sets_label"] = this.props.setter["labels"];
+			front["labels"] = getLabels(this.props.setter["label"].split(','), tmp);
+			front["sets_label"] = this.props.setter["labels"].split(',');
 		} else if (this.props.setter["type"] === "donut") {
 			data = getDonutData(this.props.setter["value"], tmp);
 			if (data === -1)
 				return ("ERROR : bad format of the value field");
-			front["labels"] = this.props.setter["labels"];
-			front["sets_label"] = this.props.setter["labels"];
+			front["labels"] = this.props.setter["labels"].split(',');
+			front["sets_label"] = this.props.setter["labels"].split(',');
 		}
+		if (this.props.border === 1)
+			border = "one wide grey column ui";
 		return(
 			<Grid>
 				<div className={"row"}>
-					<div className={IntoNb[this.props.setter["row"]] + " wide column ui"}>
-						<Fork taille={this.props.setter["column"]} data={data} color={color} front={front} chart={type} />
+					<div className={"twelve wide column ui"}>
+						<Fork taille={this.props.setter["column"]}
+							data={data}
+							color={color}
+							front={front}
+							chart={type}
+							scale={this.props.setter["scale"]}
+							limit={this.state.limit}
+							title={this.props.setter["title"]}
+						/>
+					</div>
+					<div className={"three wide column ui"}>
+						{Object.keys(btn).map(i =>{
+							var act_btn = btn[i];
+							var j = 0;
+							if (!act_btn)
+								return (null);
+							if (j < 7){
+								j++;
+								return (<Btn name={act_btn["name"]} key={act_btn["name"] + i} ftn={() => this.changeData(act_btn["time"])}/>);
+							}
+							else
+								return (null);
+						})}
+					</div>
+					<div className={border}>
 					</div>
 				</div>
 			</Grid>

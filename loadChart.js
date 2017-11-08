@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-var config = {
+/*var config = {
 	apiKey: "AIzaSyCLVpmJeXOD2_q3XedlpEaGGpSog0kQjBM",
 	authDomain: "monkeymoneyfrance.firebaseapp.com",
 	databaseURL: "https://monkeymoneyfrance.firebaseio.com",
@@ -7,7 +7,7 @@ var config = {
 	storageBucket: "monkeymoneyfrance.appspot.com",
 	messagingSenderId: "451894989456"
 };
-firebase.initializeApp(config);
+firebase.initializeApp(config);*/
 
 function getArray(str){
 	var i = 0;

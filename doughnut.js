@@ -9,7 +9,14 @@ var base_colors= {
 
 var options = {
 		responsive: true,
-		maintainAspectRatio: false,
+//		maintainAspectRatio: false,
+		title:{
+			display: true,
+			text: ""
+		},
+		legend:{
+			display:false //label sur le donut
+		},
 	}
 
 
@@ -43,11 +50,16 @@ setupData(data, color, front){
 }
 
 render(){
+	options["title"]["text"] = this.props.title;
+	if (!options["title"]["text"])
+		options["title"]["display"] = false;
 	return(
 		<div>
 				<Doughnut
 					data={this.setupData(this.props.data, this.props.color, this.props.front)}
-					option = {options}
+					width={20 * this.props.taille}
+					height={20 * this.props.taille}
+					options = {options}
 				/>
 		</div>
 

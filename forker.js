@@ -15,13 +15,16 @@ class forking extends Component{
 
 	render(){
 		var GoTo = forker[this.props.chart];
-		return (<GoTo
-						taille={this.props.taille}
-						data={this.props.data}
-						color={this.props.color}
-						front={this.props.front}
-					/>
-				)
+		return (
+			<GoTo
+				taille={this.props.taille}
+				data={this.props.data}
+				color={this.props.color}
+				front={this.props.front}
+				scale={this.props.scale}
+				title={this.props.title}
+			/>
+		)
 	}
 }
 

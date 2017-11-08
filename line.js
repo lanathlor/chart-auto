@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Line} from 'react-chartjs-2';
+import moment from 'moment';
 
 var base_colors= {
 	green: 'rgba(75,192,75,0.4)',
@@ -15,19 +16,33 @@ var options = {
 				ticks: {
 					beginAtZero:true
 				},
+				gridLines : {display:false},
 				scaleLabel: {
 					display: true,
-					labelString: 'probability'
+					labelString: 'Valeur'
 				}
 			}],
 			xAxes: [{
 				type: "time",
 				time: {
+					unit: "day",
 					displayFormats:{
 						millisecond: "h:mm:ss.SSS a"
 					}
 				}
 			}]
+		},
+		tooltips: {
+			callbacks: {
+				title: function(label,data){
+					var indice = moment(label[0].xLabel).format('DD/MM/YY -- HH:mm');					
+					return (indice);
+				}
+			}
+		},
+		title:{
+			display: true,
+			text: ""
 		}
 	}
 
@@ -71,12 +86,16 @@ setupData(data, color, front){
 }
 
 render(){
+	options["scales"]["xAxes"][0]["time"]["unit"] = this.props.scale;
+	options["title"]["text"] = this.props.title;
+	if (!options["title"]["text"])
+		options["title"]["display"] = false;
 	return(
 		<div>
 				<Line
 					data={this.setupData(this.props.data, this.props.color, this.props.front)}
 					width={10 * this.props.taille}
-					height={40 * this.props.taille}
+					height={50 * this.props.taille}
 					options={options}
 				/>
 		</div>

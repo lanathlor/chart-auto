@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Tuile from './tuile';
-import Setter from './loadChart';
+import Dash from './dashbord';
 
 /* format of the setter object :
 	type: string. the type of chart. line, bar and doughnut implemented.
@@ -48,6 +47,9 @@ import Setter from './loadChart';
 	need semantic-react, firebase-react, chart-react in order to work.
 */
 
+ReactDOM.render(<Dash node={"/chart"}/>, document.getElementById('fork'));
+
+/*
 Setter("/chart/test", function(setter, data){
-	ReactDOM.render(<Tuile setter={setter} data={data}/>, document.getElementById('fork'))
-});
+	ReactDOM.render(<Tuile setter={setter}/>, document.getElementById('fork'))
+});*/

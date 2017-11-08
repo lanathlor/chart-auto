@@ -5,7 +5,7 @@ var time_base = {
 	hour: 60 * 60 * 1000,
 	day: 24 * 60 * 60 * 1000,
 	week: 7 * 24 * 60 * 60 * 1000,
-	mounth: 30 * 24 * 60 * 60 * 1000,
+	month: 30 * 24 * 60 * 60 * 1000,
 	year: 365 * 24 * 60 * 60 * 1000
 }
 
@@ -16,6 +16,7 @@ function GetTimeOff(time_data){
 		for (var key in time_data){
 			time_off += time_data[key] * time_base[key];
 		}
+		time_off = Date.now() - time_off;
 	} else if (typeof(time_data) === "number"){
 		time_off = time_data;
 	} else {
@@ -72,6 +73,7 @@ function getTime(data, time_scale)
 	if (time === -1){
 		return (-1);
 	}
+
 	ret = getDeepness(data, 0, ret, time);
 	return (ret);
 }
