@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Tuile from './tuile';
 import firebase from 'firebase';
+import Bandeau from './bandeau';
 import {Grid} from 'semantic-ui-react';
 
 var IntoNb = {
@@ -41,6 +42,7 @@ class dash extends Component{
 			var split2 = [];
 			var k = 0;
 
+			this.snap["bandeau"] = tmp["bandeau"];
 			while (splitOrder[i]){
 				split2[i] = splitOrder[i].split(":");
 				i++;
@@ -69,8 +71,12 @@ class dash extends Component{
 				split2[i] = split1[i].split(":");
 				i++;
 			}
+			var test_b = ["test1", "test2", "test3"];
 			return (
 				<Grid className="relaxed padded grid">
+					<div className={"row centered"}>
+						<Bandeau data={test_b} node={this.snap["bandeau"]}/>
+					</div>
 					{Object.keys(split2).map(key => {
 						var split3 = split2[key][1].split(",");
 						var line = split2[key][0];
