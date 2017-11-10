@@ -27,11 +27,16 @@ class Bandeau extends Component{
 		this.snap = 0;
 	}
 	componentWillMount(){
-		firebase.database().ref(this.props.node["node"]).once("value", function(snap){
-			this.snap = snap.val();
-		}.bind(this));
+		if (this.props.node){
+			firebase.database().ref(this.props.node["node"]).once("value", function(snap){
+				this.snap = snap.val();
+			}.bind(this));
+		}
 	}
 	render(){
+		if (!this.props || !this.props.node)
+			return (null);
+
 		var data = [];
 		var label = [];
 		var keys = this.props.node["labels"].split("/");

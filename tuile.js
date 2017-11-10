@@ -39,6 +39,8 @@ var time_base = {
 	year: 365 * 24 * 60 * 60 * 1000
 }
 
+var newAgreg = 0;
+
 function getAllDataDouble(value, data){
 	var i = 0;
 	var ret = [[]];
@@ -97,6 +99,10 @@ function agregate(data, agrega){
 	var i = {};
 	var tim_lim = 0;
 	var newStamp = 0;
+
+	if (newAgreg)
+		agrega["agreg_time"] = newAgreg;
+	console.log(agrega["agreg_time"]);
 	var splitTime = getSplitTime(agrega["agreg_time"]);
 	for (var key in data){
 		if (tim_lim === 0){
@@ -143,7 +149,7 @@ class tuile extends Component{
 		this.save_data = {};
 	}
 
-	changeData(time){
+	changeData(time, agrega){
 		var new_data = [];
 		var i = 0;
 
@@ -154,6 +160,7 @@ class tuile extends Component{
 		new_data = getTime(new_data, time);
 		if (!new_data)
 			new_data = [];
+		newAgreg = agrega;
 		this.setState({data:new_data});
 	}
 
@@ -163,8 +170,9 @@ class tuile extends Component{
 		var i = 0;
 		var self = this;
 		var setter = this.props.setter;
+		var complementNode = setter['complementNode']? ('/' + this.props[setter['complementNode']]) : '';
 
-		firebase.database().ref(setter["query"]).orderByChild(setter["label"]).on("value", function(sp){
+		firebase.database().ref(setter["query"]+complementNode).orderByChild(setter["label"]).on("value", function(sp){
 			for (var key in sp.val()){
 				tmp.push(sp.val()[key]);
 			}
@@ -190,6 +198,7 @@ class tuile extends Component{
 		var btn = [];
 		var border = "";
 		var b = 0;
+		var size = "twelve";
 
 		for (var key in this.props.setter["button"]){
 			btn[b] = this.props.setter["button"][key];
@@ -215,10 +224,13 @@ class tuile extends Component{
 		}
 		if (this.props.border === 1)
 			border = "one wide grey column ui";
+
+		if (!this.props.setter["button"])
+			size = "sixteen";
 		return(
 			<Grid>
 				<div className={"row"}>
-					<div className={"twelve wide column ui"}>
+					<div className={size + " wide column ui"}>
 						<Fork taille={this.props.setter["column"]}
 							data={data}
 							color={color}
@@ -237,7 +249,7 @@ class tuile extends Component{
 								return (null);
 							if (j < 7){
 								j++;
-								return (<Btn name={act_btn["name"]} key={act_btn["name"] + i} ftn={() => this.changeData(act_btn["time"])}/>);
+								return (<Btn name={act_btn["name"]} key={act_btn["name"] + i} ftn={() => this.changeData(act_btn["time"], act_btn["agrega"])}/>);
 							}
 							else
 								return (null);

@@ -71,12 +71,11 @@ class dash extends Component{
 				split2[i] = split1[i].split(":");
 				i++;
 			}
-			var test_b = ["test1", "test2", "test3"];
 			return (
 				<Grid className="relaxed padded grid">
-					<div className={"row centered"}>
-						<Bandeau data={test_b} node={this.snap["bandeau"]}/>
-					</div>
+					{<div className={"row centered"}>
+						<Bandeau node={this.snap["bandeau"]}/>
+					</div>}
 					{Object.keys(split2).map(key => {
 						var split3 = split2[key][1].split(",");
 						var line = split2[key][0];

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Dash from './dashbord';
+//import Leat from './map';
 
 /* format of the setter object :
 	type: string. the type of chart. line, bar and doughnut implemented.
@@ -48,7 +49,7 @@ import Dash from './dashbord';
 */
 
 ReactDOM.render(<Dash node={"/chart"}/>, document.getElementById('fork'));
-
+//ReactDOM.render(<Leat/>, document.getElementById("map"));
 /*
 Setter("/chart/test", function(setter, data){
 	ReactDOM.render(<Tuile setter={setter}/>, document.getElementById('fork'))
