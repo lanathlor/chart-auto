@@ -30,13 +30,13 @@ function getDeepness(data, deep, ret, time){
 	var j = 0;
 	var i_tmp = 0;
 
-	if (typeof(data[0]) === "undefined"){
+	if (typeof(data[0]) === "undefined"){ // bottom
 		return (-1);
 	}
 	ret = [];
 	while (data[i]){
-		ret[j] = getDeepness(data[i], deep + 1, ret[i], time);
-		if (ret[j] === -1){
+		ret[j] = getDeepness(data[i], deep + 1, ret[i], time); // recursive call
+		if (ret[j] === -1){ // we hit the bot
 			ret[j] = {};
 			if (data[i]["timestamp"] && data[i]["timestamp"] >= time){
 				ret[j] = data[i];

@@ -5,6 +5,7 @@ import 'semantic-ui-css/semantic.min.css';
 import firebase from 'firebase';
 import Btn from './btn';
 import getTime from './timeGetter';
+import Moment from 'moment';
 var config = {
 	apiKey: "AIzaSyCLVpmJeXOD2_q3XedlpEaGGpSog0kQjBM",
 	authDomain: "monkeymoneyfrance.firebaseapp.com",
@@ -102,7 +103,6 @@ function agregate(data, agrega){
 
 	if (newAgreg)
 		agrega["agreg_time"] = newAgreg;
-	console.log(agrega["agreg_time"]);
 	var splitTime = getSplitTime(agrega["agreg_time"]);
 	for (var key in data){
 		if (tim_lim === 0){
@@ -115,6 +115,8 @@ function agregate(data, agrega){
 			if (agrega["agreg"] === "="){
 				for (var key_ag in ret[newStamp]){
 					if (key_ag !== agrega["label"]){
+						if (!i[key_ag] || i[key_ag] === 0)
+							i[key_ag] = 1;
 						ret[newStamp][key_ag] /= i[key_ag];
 						i[key_ag] = 0;
 					}
@@ -139,17 +141,29 @@ function agregate(data, agrega){
 			}
 		}
 	}
+	if (agrega["agreg"] === "="){
+		for (var key_agr in ret[newStamp]){
+			if (key_agr !== agrega["label"]){
+				if (!i[key_agr] || i[key_agr] === 0)
+					i[key_agr] = 1;
+				ret[newStamp][key_agr] /= i[key_agr];
+				i[key_agr] = 0;
+			}
+		}
+	}
 	return (ret);
 }
 
 class tuile extends Component{
 	constructor(props) {
 		super(props);
+		this.scale_chart = this.props.setter["scale"];
 		this.state = {};
 		this.save_data = {};
+		this.ok = false;
 	}
 
-	changeData(time, agrega){
+	changeData(time, agrega, scaler){
 		var new_data = [];
 		var i = 0;
 
@@ -161,10 +175,18 @@ class tuile extends Component{
 		if (!new_data)
 			new_data = [];
 		newAgreg = agrega;
+		this.scale_chart = scaler;
 		this.setState({data:new_data});
 	}
 
 	componentWillMount() {
+		this.getData();
+	}
+
+	componentWillUpdate(){
+	}
+
+	getData(){
 		var tmp = [];
 		var data = {};
 		var i = 0;
@@ -173,23 +195,23 @@ class tuile extends Component{
 		var complementNode = setter['complementNode']? ('/' + this.props[setter['complementNode']]) : '';
 
 		firebase.database().ref(setter["query"]+complementNode).orderByChild(setter["label"]).on("value", function(sp){
-			for (var key in sp.val()){
-				tmp.push(sp.val()[key]);
+			var val = sp.val();
+			for (var key in val){
+				tmp.push(val[key]);
 			}
 			tmp.sort(function(a, b){
-				return a[setter["label"]] > b[setter["label"]];
+				return (a[setter["label"]] < b[setter["label"]] ? -1 : (a[setter["label"]] > b[setter["label"]] ? 1 : 0));
 			})
 			tmp.sort();
 			while (tmp[i]){
 				data[tmp[i][setter["label"]]] = tmp[i];
 				i++;
 			}
-			self.setState({data:data, save_data:data, limit:0});
-		});
+			this.setState({data:data, save_data:data, limit:0});
+		}.bind(this));
 	}
 
 	render(){
-		if (!this.state.data) return null;
 		var data = this.state.data;
 		var front = {};
 		var type = this.props.setter["type"];
@@ -236,20 +258,24 @@ class tuile extends Component{
 							color={color}
 							front={front}
 							chart={type}
-							scale={this.props.setter["scale"]}
+							scale={this.scale_chart} // scaling du temps sur l'axe X
 							limit={this.state.limit}
 							title={this.props.setter["title"]}
 						/>
 					</div>
 					<div className={"three wide column ui"}>
 						{Object.keys(btn).map(i =>{
-							var act_btn = btn[i];
+							var act_btn = btn[i]; // bouton a charger.
 							var j = 0;
 							if (!act_btn)
 								return (null);
 							if (j < 7){
 								j++;
-								return (<Btn name={act_btn["name"]} key={act_btn["name"] + i} ftn={() => this.changeData(act_btn["time"], act_btn["agrega"])}/>);
+								return (<Btn name={act_btn["name"]} 
+											key={act_btn["name"] + i} 
+											ftn={() => this.changeData(act_btn["time"], 
+																	act_btn["agrega"], 
+																	act_btn["scale"])}/>);
 							}
 							else
 								return (null);

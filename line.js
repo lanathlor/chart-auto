@@ -87,6 +87,21 @@ setupData(data, color, front){
 
 render(){
 	options["scales"]["xAxes"][0]["time"]["unit"] = this.props.scale;
+	options["tooltips"]["callbacks"] = {
+		title: function(label, data){
+			var indice = "";
+			console.log(this.props.scale);
+			if (this.props.scale === "day")
+				indice = moment(label[0].xLabel).format('DD/MM/YY -- HH');
+			else if (this.props.scale === "month")
+				indice = moment(label[0].xLabel).format('DD/MM/YY');
+			else if (this.props.scale === "year")
+				indice = moment(label[0].xLabel).format('MM/YY');
+			else if (this.props.scale === "infinite")
+				indice = moment(label[0].xLabel).format('YY');
+			return (indice);
+		}.bind(this)
+	}
 	options["title"]["text"] = this.props.title;
 	if (!options["title"]["text"])
 		options["title"]["display"] = false;

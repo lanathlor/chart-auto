@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Dash from './dashbord';
+import firebase from 'firebase';
 //import Leat from './map';
 
 /* format of the setter object :
@@ -48,6 +49,21 @@ import Dash from './dashbord';
 	need semantic-react, firebase-react, chart-react in order to work.
 */
 
+/*var i = 0;
+var end_time = Date.now()
+var hour = (1000 * 60 * 60);
+var start_time = end_time - (hour * 24 * 200);
+
+while (start_time + (hour * i) < end_time)
+{
+	firebase.database().ref("chart/data_test/clee" + i).update({
+		timestamp: start_time + (hour * i),
+		data1:i,
+		data2:i * 2
+	});
+	i++;
+}
+*/
 ReactDOM.render(<Dash node={"/chart"}/>, document.getElementById('fork'));
 //ReactDOM.render(<Leat/>, document.getElementById("map"));
 /*

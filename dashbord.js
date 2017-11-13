@@ -4,7 +4,7 @@ import firebase from 'firebase';
 import Bandeau from './bandeau';
 import {Grid} from 'semantic-ui-react';
 
-var IntoNb = {
+var IntoNb = { // convertion pour les column semantic
 	1:"one",
 	2:"two",
 	3:"three",
@@ -35,7 +35,7 @@ class dash extends Component{
 		var i = 0;
 
 		this.snap = [{}];
-		firebase.database().ref(this.props.node).on("value", function(snap){
+		firebase.database().ref(this.props.node).on("value", function(snap){ // chargement des données et mise en forme
 			var tmp = snap.val();
 			var splitOrder = tmp["order"].split(";");
 			var splitSetting = tmp["setting"].split("/");
@@ -84,7 +84,7 @@ class dash extends Component{
 								{Object.keys(split3).map(j => {
 									var bd = 0;
 									var col = split3[j];
-									var set_comp = this.snap[line][col];
+									var set_comp = this.snap[line][col]; // composant a renderer
 									if (set_comp["row"] === 8 && j * 1 !== split3.length - 1)
 										bd = 1;
 									return (
