@@ -23,6 +23,17 @@ var IntoNb = { // convertion pour les column semantic
 	16:"sixteen",
 }
 
+function getSplitName(split, name){
+	var i = 0;
+
+	while (split[i]){
+		if (split[i][1] === name)
+			return (split[i][0]);
+		i++;
+	}
+	return (null);
+}
+
 class dash extends Component{
 	constructor(props) {
 		super(props);
@@ -40,21 +51,24 @@ class dash extends Component{
 			var splitOrder = tmp["order"].split(";");
 			var splitSetting = tmp["setting"].split("/");
 			var split2 = [];
-			var k = 0;
 
+			while (splitSetting[i]){
+				splitSetting[i] = splitSetting[i].split(":");
+				i++;
+			}
+			i = 0;
 			this.snap["bandeau"] = tmp["bandeau"];
 			while (splitOrder[i]){
 				split2[i] = splitOrder[i].split(":");
 				i++;
 			}
 			i = 0;
-			while (split2[i] && splitSetting[k]){
+			while (split2[i]){
 				var lastSplit = split2[i][1].split(",");
 				var j = 0;
 				this.snap[split2[i][0] * 1] = {};
-				while (lastSplit[j] && splitSetting[k]){
-					this.snap[split2[i][0] * 1][lastSplit[j]] = tmp[splitSetting[k]];
-					k++;
+				while (lastSplit[j]){
+					this.snap[split2[i][0] * 1][lastSplit[j]] = tmp[getSplitName(splitSetting, lastSplit[j])];
 					j++;
 				}
 				i++;
@@ -86,7 +100,7 @@ class dash extends Component{
 									var col = split3[j];
 									var set_comp = this.snap[line][col]; // composant a renderer
 									if (set_comp["row"] === 8 && j * 1 !== split3.length - 1)
-										bd = 1;
+										bd = 0; // 0 to disable the border
 									return (
 										<div className={IntoNb[set_comp["row"]] + " wide column ui"} style={{backgroundColor:"white",color:"white"}} key={key+j}>
 											<Tuile setter={set_comp} border={bd}/>

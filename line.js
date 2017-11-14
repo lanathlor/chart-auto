@@ -90,7 +90,6 @@ render(){
 	options["tooltips"]["callbacks"] = {
 		title: function(label, data){
 			var indice = "";
-			console.log(this.props.scale);
 			if (this.props.scale === "day")
 				indice = moment(label[0].xLabel).format('DD/MM/YY -- HH');
 			else if (this.props.scale === "month")

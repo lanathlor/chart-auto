@@ -197,11 +197,13 @@ class tuile extends Component{
 		firebase.database().ref(setter["query"]+complementNode).orderByChild(setter["label"]).on("value", function(sp){
 			var val = sp.val();
 			for (var key in val){
-				tmp.push(val[key]);
+				if (typeof(val[key]) === "object")
+					tmp.push(val[key]);
 			}
 			tmp.sort(function(a, b){
 				return (a[setter["label"]] < b[setter["label"]] ? -1 : (a[setter["label"]] > b[setter["label"]] ? 1 : 0));
 			})
+			tmp.sort();
 			tmp.sort();
 			while (tmp[i]){
 				data[tmp[i][setter["label"]]] = tmp[i];
