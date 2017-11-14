@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Dash from './dashbord';
-import firebase from 'firebase';
+//import firebase from 'firebase';
 //import Leat from './map';
 
 /* format of the setter object :

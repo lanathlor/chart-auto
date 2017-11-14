@@ -5,7 +5,7 @@ import 'semantic-ui-css/semantic.min.css';
 import firebase from 'firebase';
 import Btn from './btn';
 import getTime from './timeGetter';
-import Moment from 'moment';
+//import Moment from 'moment';
 var config = {
 	apiKey: "AIzaSyCLVpmJeXOD2_q3XedlpEaGGpSog0kQjBM",
 	authDomain: "monkeymoneyfrance.firebaseapp.com",
@@ -16,7 +16,7 @@ var config = {
 };
 firebase.initializeApp(config);
 
-/*var IntoNb = {
+var IntoNb = { // convertion pour les column semantic
 	1:"one",
 	2:"two",
 	3:"three",
@@ -26,9 +26,15 @@ firebase.initializeApp(config);
 	7:"seven",
 	8:"eight",
 	9:"nine",
-	10:"ten"
+	10:"ten",
+	11:"eleven",
+	12:"twelve",
+	13:"thirteen",
+	14:"fourteen",
+	15:"fifteen",
+	16:"sixteen",
 }
-*/
+
 var time_base = {
 	millisecond: 1,
 	second: 1000,
@@ -171,9 +177,9 @@ class tuile extends Component{
 			new_data[i] = this.state.save_data[key];
 			i++;
 		}
-		new_data = getTime(new_data, time);
 		if (!new_data)
 			new_data = [];
+		new_data = getTime(new_data, time);
 		newAgreg = agrega;
 		this.scale_chart = scaler;
 		this.setState({data:new_data});
@@ -190,7 +196,6 @@ class tuile extends Component{
 		var tmp = [];
 		var data = {};
 		var i = 0;
-		var self = this;
 		var setter = this.props.setter;
 		var complementNode = setter['complementNode']? ('/' + this.props[setter['complementNode']]) : '';
 
@@ -222,7 +227,7 @@ class tuile extends Component{
 		var btn = [];
 		var border = "";
 		var b = 0;
-		var size = "twelve";
+		var size = 12;
 
 		for (var key in this.props.setter["button"]){
 			btn[b] = this.props.setter["button"][key];
@@ -250,11 +255,11 @@ class tuile extends Component{
 			border = "one wide grey column ui";
 
 		if (!this.props.setter["button"])
-			size = "sixteen";
+			size = 16;
 		return(
 			<Grid>
 				<div className={"row"}>
-					<div className={size + " wide column ui"}>
+					<div className={IntoNb[size] + " wide column ui"}>
 						<Fork taille={this.props.setter["column"]}
 							data={data}
 							color={color}
@@ -265,7 +270,7 @@ class tuile extends Component{
 							title={this.props.setter["title"]}
 						/>
 					</div>
-					<div className={"three wide column ui"}>
+					<div className={IntoNb[4] + " wide column ui"}>
 						{Object.keys(btn).map(i =>{
 							var act_btn = btn[i]; // bouton a charger.
 							var j = 0;

@@ -43,10 +43,10 @@ class dash extends Component{
 		}
 	}
 	componentWillMount(){
-		var i = 0;
 
 		this.snap = [{}];
 		firebase.database().ref(this.props.node).on("value", function(snap){ // chargement des données et mise en forme
+			var i = 0;
 			var tmp = snap.val();
 			var splitOrder = tmp["order"].split(";");
 			var splitSetting = tmp["setting"].split("/");
@@ -99,7 +99,9 @@ class dash extends Component{
 									var bd = 0;
 									var col = split3[j];
 									var set_comp = this.snap[line][col]; // composant a renderer
-									if (set_comp["row"] === 8 && j * 1 !== split3.length - 1)
+									if (!set_comp)
+										return (null);
+									if (set_comp && set_comp["row"] === 8 && j * 1 !== split3.length - 1)
 										bd = 0; // 0 to disable the border
 									return (
 										<div className={IntoNb[set_comp["row"]] + " wide column ui"} style={{backgroundColor:"white",color:"white"}} key={key+j}>

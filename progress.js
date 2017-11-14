@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { Progress, Header } from 'semantic-ui-react';
 
 class prog extends Component{
-	constructor(props){
-		super(props);
-	}
+
 	render(){
 		var data = this.props.data;
 		var label = this.props.front["labels"];
