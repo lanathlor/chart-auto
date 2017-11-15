@@ -1,22 +1,15 @@
 import React, {Component} from 'react';
 import Fork from './forker';
-import {Grid} from 'semantic-ui-react';
+import {Grid,Modal} from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import firebase from 'firebase';
 import Btn from './btn';
 import getTime from './timeGetter';
-//import Moment from 'moment';
-var config = {
-	apiKey: "AIzaSyCLVpmJeXOD2_q3XedlpEaGGpSog0kQjBM",
-	authDomain: "monkeymoneyfrance.firebaseapp.com",
-	databaseURL: "https://monkeymoneyfrance.firebaseio.com",
-	projectId: "monkeymoneyfrance",
-	storageBucket: "monkeymoneyfrance.appspot.com",
-	messagingSenderId: "451894989456"
-};
-firebase.initializeApp(config);
+import Moment from 'moment';
+import Tuile from './tuile';
+import ButtonsBlock from '../block/buttonsblock';
 
-var IntoNb = { // convertion pour les column semantic
+/*var IntoNb = {
 	1:"one",
 	2:"two",
 	3:"three",
@@ -26,15 +19,9 @@ var IntoNb = { // convertion pour les column semantic
 	7:"seven",
 	8:"eight",
 	9:"nine",
-	10:"ten",
-	11:"eleven",
-	12:"twelve",
-	13:"thirteen",
-	14:"fourteen",
-	15:"fifteen",
-	16:"sixteen",
+	10:"ten"
 }
-
+*/
 var time_base = {
 	millisecond: 1,
 	second: 1000,
@@ -57,6 +44,7 @@ function getAllDataDouble(value, data){
 	for (var key in data){
 		while (value[i]){
 			if (!ret[i])
+
 				ret[i] = [];
 			ret[i].push(data[key][value[i]]);
 			i++;
@@ -69,10 +57,17 @@ function getAllDataDouble(value, data){
 function getLabels(labeliser, data){
 	var i = 0;
 	var ret = [];
-
-	for (var key in data){
-		ret[i] = data[key][labeliser];
-		i++;
+	if (labeliser) {
+		labeliser = labeliser.split(',')
+		for (var key in data){
+			ret[i] = data[key]['timestamp'];
+			i++;
+		}
+	} else {
+		for (var key in data){
+			ret[i] = parseInt(key)
+			i++;
+		}
 	}
 	return (ret);
 }
@@ -81,10 +76,9 @@ function getDonutData(value, data){
 	var i = 0;
 	var ret = [];
 
-	if (typeof(value) !== "string")
-		return (-1);
-	for (var key in data){
-		ret[i] = data[key][value];
+	for (var key in value){
+
+		ret[i] = data[value[key]];
 		i++;
 	}
 	return (ret);
@@ -112,12 +106,12 @@ function agregate(data, agrega){
 	var splitTime = getSplitTime(agrega["agreg_time"]);
 	for (var key in data){
 		if (tim_lim === 0){
-			tim_lim = data[key][agrega["label"]] + splitTime;
+			tim_lim = data[key]['timestamp'] + splitTime;
 			newStamp = tim_lim - (splitTime / 2);
 			ret[newStamp] = {};
-			ret[newStamp][agrega["label"]] = newStamp;
+			ret[newStamp]['timestamp'] = newStamp;
 		}
-		while (data[key][agrega["label"]] >= tim_lim){
+		while (data[key]['timestamp'] >= tim_lim){
 			if (agrega["agreg"] === "="){
 				for (var key_ag in ret[newStamp]){
 					if (key_ag !== agrega["label"]){
@@ -137,19 +131,19 @@ function agregate(data, agrega){
 			for (var key2 in data[key]){
 				if (!i[key2])
 					i[key2] = 0;
-				if (key2 !== agrega["label"] && data[key][key2]){
+				if (key2 !== 'timestamp' && data[key][key2]){
 					if (!ret[newStamp][key2])
 						ret[newStamp][key2] = 0;
 					ret[newStamp][key2] += data[key][key2];
 					i[key2]++;
 				} else
-					ret[newStamp][agrega["label"]] = newStamp;
+					ret[newStamp]['timestamp'] = newStamp;
 			}
 		}
 	}
 	if (agrega["agreg"] === "="){
 		for (var key_agr in ret[newStamp]){
-			if (key_agr !== agrega["label"]){
+			if (key_agr !== 'timestamp'){
 				if (!i[key_agr] || i[key_agr] === 0)
 					i[key_agr] = 1;
 				ret[newStamp][key_agr] /= i[key_agr];
@@ -165,101 +159,113 @@ class tuile extends Component{
 		super(props);
 		this.scale_chart = this.props.setter["scale"];
 		this.state = {};
-		this.save_data = {};
 		this.ok = false;
+		this.handleFunction = this.handleFunction.bind(this)
 	}
 
-	changeData(time, agrega, scaler){
-		var new_data = [];
-		var i = 0;
 
-		for (var key in this.state.save_data){
-			new_data[i] = this.state.save_data[key];
-			i++;
-		}
-		if (!new_data)
-			new_data = [];
-		new_data = getTime(new_data, time);
-		newAgreg = agrega;
-		this.scale_chart = scaler;
-		this.setState({data:new_data});
-	}
+
 
 	componentWillMount() {
-		this.getData();
+		if (this.props.setter["type"] === "line" || this.props.setter["type"] === "bar"){
+			this.getLineData();
+		} else if (this.props.setter["type"] === "donut" || this.props.setter["type"] === "progress") {
+			this.getDonutDataTest()
+		}
 	}
 
 	componentWillUpdate(){
 	}
 
-	getData(){
-		var tmp = [];
+	getDonutDataTest() {
+		var tmp = {};
 		var data = {};
-		var i = 0;
+		var front = {};
+		var complementNode = this.props.setter['complementNode']? ('/' + this.props[this.props.setter['complementNode']]) : '';
+
+		firebase.database().ref(this.props.setter["query"]+complementNode).orderByKey().limitToLast(1).on("child_added", function(sp){
+			var val = sp.val();
+			data = getDonutData(this.props.setter["value"].split(','), val);
+			if (data === -1)
+				return ("ERROR : bad format of the value field");
+			front["labels"] = this.props.setter["labels"].split(',');
+			front["sets_label"] = this.props.setter["labels"].split(',');
+			this.setState({data:data, limit:0,front:front});
+		}.bind(this));
+	}
+	getLineData(btn){
+		var data = {};
+	  var front = {};
 		var setter = this.props.setter;
 		var complementNode = setter['complementNode']? ('/' + this.props[setter['complementNode']]) : '';
+		var startAt = (typeof btn !== 'undefined') ? Moment().subtract(btn.time.value , btn.time.key).valueOf().toString() : Moment().subtract(setter.time.value , setter.time.key).valueOf().toString();
 
-		firebase.database().ref(setter["query"]+complementNode).orderByChild(setter["label"]).on("value", function(sp){
+		firebase.database().ref(setter["query"]+complementNode).orderByKey().startAt(startAt).once("value", function(sp){
+
 			var val = sp.val();
 			for (var key in val){
 				if (typeof(val[key]) === "object")
-					tmp.push(val[key]);
+					if (typeof setter['label'] !== 'undefined') // label is defined within the val
+					data[val[key][setter["label"]]] = val[key]
+					else // lets use the node value instead (must be a timestamp)
+					data[key] = val[key]
 			}
-			tmp.sort(function(a, b){
-				return (a[setter["label"]] < b[setter["label"]] ? -1 : (a[setter["label"]] > b[setter["label"]] ? 1 : 0));
-			})
-			tmp.sort();
-			tmp.sort();
-			while (tmp[i]){
-				data[tmp[i][setter["label"]]] = tmp[i];
-				i++;
+			var tmp = data;
+			if ((btn && btn.agreg) || this.props.setter["agreg"]){
+				var agrega = (typeof btn !== 'undefined') ? btn : this.props.setter
+				tmp = agregate(data, agrega);
 			}
-			this.setState({data:data, save_data:data, limit:0});
+
+			data = getAllDataDouble(this.props.setter["value"].split(','), tmp);
+			if (data === -1)
+				return ("ERROR : bad format of the value field");
+			front["labels"] = getLabels(this.props.setter["label"], tmp);
+			front["sets_label"] = this.props.setter["labels"].split(',');
+
+			this.setState({data:data, limit:0,front:front});
 		}.bind(this));
 	}
 
+
+	handleFunction(e){
+    switch (e.key) {
+      case 'changeScale':
+			this.getLineData(e)
+       break;
+    }
+  }
+
 	render(){
+		if (!this.state.data || !this.state.front) return null;
 		var data = this.state.data;
-		var front = {};
+		var front = this.state.front;
 		var type = this.props.setter["type"];
-		var color = this.props.setter["color"].split(',');
-		var tmp = data;
+		var color = this.props.setter["color"].split(';');
 		var btn = [];
 		var border = "";
 		var b = 0;
-		var size = 12;
-
+		var size = "twelve";
+		var self = this;
 		for (var key in this.props.setter["button"]){
 			btn[b] = this.props.setter["button"][key];
 			b++;
 		}
 
-		if (this.props.setter["agreg"]){
-			tmp = agregate(data, this.props.setter);
-		}
-		if (this.props.setter["type"] === "line" || this.props.setter["type"] === "bar"){
-
-			data = getAllDataDouble(this.props.setter["value"].split(','), tmp);
-			if (data === -1)
-				return ("ERROR : bad format of the value field");
-			front["labels"] = getLabels(this.props.setter["label"].split(','), tmp);
-			front["sets_label"] = this.props.setter["labels"].split(',');
-		} else if (this.props.setter["type"] === "donut" || this.props.setter["type"] === "progress") {
-			data = getDonutData(this.props.setter["value"], tmp);
-			if (data === -1)
-				return ("ERROR : bad format of the value field");
-			front["labels"] = this.props.setter["labels"].split(',');
-			front["sets_label"] = this.props.setter["labels"].split(',');
-		}
 		if (this.props.border === 1)
 			border = "one wide grey column ui";
 
 		if (!this.props.setter["button"])
-			size = 16;
+			size = "sixteen";
+
 		return(
-			<Grid>
-				<div className={"row"}>
-					<div className={IntoNb[size] + " wide column ui"}>
+			<Grid style={{
+									backgroundColor:'white',
+									boxShadow: '0 1px 2px 0 rgba(34,36,38,.15)',
+									borderRadius: '.28571429rem',
+									border: '1px solid rgba(34,36,38,.15)'
+								}}>
+				<Grid.Row >
+					<Grid.Column width={'13'}>
 						<Fork taille={this.props.setter["column"]}
 							data={data}
 							color={color}
@@ -268,29 +274,20 @@ class tuile extends Component{
 							scale={this.scale_chart} // scaling du temps sur l'axe X
 							limit={this.state.limit}
 							title={this.props.setter["title"]}
+							chartClicked = {() => self.props.chartClicked(this.props.setter.modal)}
 						/>
-					</div>
-					<div className={IntoNb[4] + " wide column ui"}>
-						{Object.keys(btn).map(i =>{
-							var act_btn = btn[i]; // bouton a charger.
-							var j = 0;
-							if (!act_btn)
-								return (null);
-							if (j < 7){
-								j++;
-								return (<Btn name={act_btn["name"]} 
-											key={act_btn["name"] + i} 
-											ftn={() => this.changeData(act_btn["time"], 
-																	act_btn["agrega"], 
-																	act_btn["scale"])}/>);
-							}
-							else
-								return (null);
-						})}
-					</div>
-					<div className={border}>
-					</div>
-				</div>
+					</Grid.Column>
+
+					<ButtonsBlock
+						fluid = {true}
+						textAlign='center'
+						width={'3'}
+						circular = {true}
+						adminType = {'president'}
+						path={'dash/averageCotis/default'}
+						handleFunction = {this.handleFunction}
+						handleModal = {this.handleModal}/>
+				</Grid.Row>
 			</Grid>
 		)
 	}

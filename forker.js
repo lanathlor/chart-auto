@@ -16,6 +16,7 @@ var forker = {
 class forking extends Component{
 
 	render(){
+		var self = this
 		var GoTo = forker[this.props.chart];
 		return (
 			<GoTo
@@ -25,6 +26,7 @@ class forking extends Component{
 				front={this.props.front}
 				scale={this.props.scale}
 				title={this.props.title}
+				chartClicked = {()=> self.props.chartClicked()}
 			/>
 		)
 	}
