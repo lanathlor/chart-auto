@@ -22,6 +22,7 @@ function GetTimeOff(time_data){
 	} else {
 		return (-1);
 	}
+
 	return (time_off);
 }
 
@@ -34,6 +35,7 @@ function getDeepness(data, deep, ret, time){
 		return (-1);
 	}
 	ret = [];
+
 	while (data[i]){
 		ret[j] = getDeepness(data[i], deep + 1, ret[i], time); // recursive call
 		if (ret[j] === -1){ // we hit the bot

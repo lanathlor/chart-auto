@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import Dash from './dashbord';
 //import firebase from 'firebase';
 import Leat from './map';
+import firebase from 'firebase';
+//import Leat from './map';
 
 /* format of the setter object :
 	type: string. the type of chart. line, bar and doughnut implemented.

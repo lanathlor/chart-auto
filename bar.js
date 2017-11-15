@@ -13,6 +13,7 @@ var options = {
 		maintainAspectRatio: false,
 		scales: {
 			yAxes: [{
+				stacked: true,
 				ticks: {
 					beginAtZero:true
 				},
@@ -35,7 +36,7 @@ var options = {
 		tooltips: {
 			callbacks: {
 				title: function(label,data){
-					var indice = moment(label[0].xLabel).format('DD/MM/YY -- HH:mm');					
+					var indice = moment(label[0].xLabel).format('DD/MM/YY -- HH:mm');
 					return (indice);
 				}
 			}
@@ -102,7 +103,7 @@ render(){
 	}
 	if (!options["title"]["text"])
 		options["title"]["display"] = false;
-	
+
 	return(
 		<div>
 			<Bar
