@@ -35,7 +35,7 @@ var options = {
 		tooltips: {
 			callbacks: {
 				title: function(label,data){
-					var indice = moment(label[0].xLabel).format('DD/MM/YY -- HH:mm');					
+					var indice = moment(label[0].xLabel).format('DD/MM/YY -- HH:mm');
 					return (indice);
 				}
 			}
@@ -70,11 +70,11 @@ setupData(data, color, front){
 		process_data["datasets"][i]["data"] = data[i];
 		process_data["datasets"][i]["backgroundColor"] = "rgba(0,0,0,0)";
 		if (color[i]) {
-			process_data["datasets"][i]["borderColor"] = base_colors[color[i]];
+			process_data["datasets"][i]["borderColor"] = color[i];
 			j = i;
 		}
 		else
-			process_data["datasets"][i]["borderColor"] = base_colors[color[i % j]];
+			process_data["datasets"][i]["borderColor"] = color[i];
 		if (front["sets_label"][i]){
 			process_data["datasets"][i]["label"] = front["sets_label"][i];
 			j = i;
