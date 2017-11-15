@@ -18,6 +18,12 @@ class Mapper extends Component{
 	render(){
 		if (!this.state.position)
 			return (null);
+		var pos = [];
+		pos[0] = this.position[0];
+		pos[1] = this.position[1];
+		pos[0] += 0.005;
+		console.log(this.position);
+		console.log(pos);
 		return (
 			<Map center={this.position} zoom={13}>
 				<TileLayer
@@ -27,6 +33,11 @@ class Mapper extends Component{
 				<Marker position={this.position}>
 					<Popup>
 						<span>A pretty CSS3 popup.<br/>Easily customizable.</span>
+					</Popup>
+				</Marker>
+				<Marker position={pos}>
+					<Popup>
+						<span>second<br/>popup</span>
 					</Popup>
 				</Marker>
 			</Map>

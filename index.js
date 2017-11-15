@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Dash from './dashbord';
 //import firebase from 'firebase';
-//import Leat from './map';
+import Leat from './map';
 
 /* format of the setter object :
 	type: string. the type of chart. line, bar and doughnut implemented.
@@ -64,8 +64,8 @@ while (start_time + (hour * i) < end_time)
 	i++;
 }
 */
-ReactDOM.render(<Dash node={"/chart"}/>, document.getElementById('fork'));
-//ReactDOM.render(<Leat/>, document.getElementById("map"));
+// ReactDOM.render(<Dash node={"/chart"}/>, document.getElementById('fork'));
+ReactDOM.render(<Leat/>, document.getElementById("map"));
 /*
 Setter("/chart/test", function(setter, data){
 	ReactDOM.render(<Tuile setter={setter}/>, document.getElementById('fork'))

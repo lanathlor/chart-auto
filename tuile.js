@@ -233,6 +233,7 @@ class tuile extends Component{
 			btn[b] = this.props.setter["button"][key];
 			b++;
 		}
+		console.log(btn);
 
 		if (this.props.setter["agreg"]){
 			tmp = agregate(data, this.props.setter);
