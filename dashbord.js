@@ -4,28 +4,8 @@ import firebase from 'firebase';
 import Bandeau from './bandeau';
 import {Grid,Modal,Header,Segment,Icon} from 'semantic-ui-react';
 
-var IntoNb = { // convertion pour les column semantic
-	1:"one",
-	2:"two",
-	3:"three",
-	4:"four",
-	5:"five",
-	6:"six",
-	7:"seven",
-	8:"eight",
-	9:"nine",
-	10:"ten",
-	11:"eleven",
-	12:"twelve",
-	13:"thirteen",
-	14:"fourteen",
-	15:"fifteen",
-	16:"sixteen",
-}
-
 function getSplitName(split, name){
 	var i = 0;
-
 	while (split[i]){
 		if (split[i][1] === name)
 			return (split[i][0]);
@@ -123,7 +103,6 @@ class dash extends Component{
 						return (
 							<Grid.Row columns={Object.keys(split3).length} equals key={key} style={{justifyContent: "space-between",margin:'0em 0em',padding:'1em 0em'}}>
 								{Object.keys(split3).map(j => {
-									console.log(split3)
 									var bd = 0;
 									var col = split3[j];
 									var set_comp = this.snap[line][col]; // composant a renderer

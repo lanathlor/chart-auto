@@ -241,21 +241,8 @@ class tuile extends Component{
 		var front = this.state.front;
 		var type = this.props.setter["type"];
 		var color = this.props.setter["color"].split(';');
-		var btn = [];
-		var border = "";
-		var b = 0;
-		var size = "twelve";
 		var self = this;
-		for (var key in this.props.setter["button"]){
-			btn[b] = this.props.setter["button"][key];
-			b++;
-		}
 
-		if (this.props.border === 1)
-			border = "one wide grey column ui";
-
-		if (!this.props.setter["button"])
-			size = "sixteen";
 
 		return(
 			<Grid style={{
